@@ -29,5 +29,11 @@ router.get(
   authorizeRoles("SUPERADMIN"),
   getAdminsByCity
 );
+router.get(
+  "/users",
+  verifyToken,
+  authorizeRoles("SUPERADMIN", "ADMIN"),
+  getUsers
+);
 module.exports = router;
 

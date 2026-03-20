@@ -29,8 +29,8 @@ router.get(
   authorizeRoles("SUPERADMIN"),
   getAdminsByCity
 );
-router.getRegisteredUsers(
-  "/users",
+router.get(
+  "/getRegisteredUsers",
   verifyToken,
   authorizeRoles("SUPERADMIN", "ADMIN"),
   getUsers

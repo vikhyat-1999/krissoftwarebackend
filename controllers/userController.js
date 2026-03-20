@@ -74,3 +74,31 @@ exports.getAdminsByCity = async (req, res) => {
 
   res.json({ admins });
 };
+exports.getUsers = async (req, res) => {
+  try {
+    const { role, location } = req.user;
+
+    let users;
+
+    if (role === "SUPER_ADMIN") {
+      users = await User.find();
+    } 
+    
+    else if (role === "ADMIN") {
+      users = await User.find({
+        role: "ENGINEER",
+        location: location // 🔥 key part
+      });
+    } 
+    
+    else {
+      return res.status(403).json({ message: "Not allowed" });
+    }
+
+    res.json(users);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

@@ -74,7 +74,7 @@ exports.getAdminsByCity = async (req, res) => {
 
   res.json({ admins });
 };
-exports.getUsers = async (req, res) => {
+exports.getRegisteredUsers = async (req, res) => {
   try {
     const { role, location } = req.user;
 

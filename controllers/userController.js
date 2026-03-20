@@ -77,7 +77,7 @@ exports.getAdminsByCity = async (req, res) => {
 exports.getRegisteredUsers = async (req, res) => {
   try {
     const { role, location } = req.user;
-
+    console.log(req.user);
     let users;
 
     if (role === "SUPER_ADMIN") {

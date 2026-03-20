@@ -102,3 +102,13 @@ exports.getRegisteredUsers = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+exports.toggleUserStatus = async (req, res) => {
+  const { isActive } = req.body;
+
+  const user = await User.findById(req.params.id);
+  user.isActive = isActive;
+
+  await user.save();
+
+  res.json({ message: "Updated" });
+};

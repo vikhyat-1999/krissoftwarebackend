@@ -30,10 +30,10 @@ router.get(
   getAdminsByCity
 );
 router.get(
-  "/getRegisteredUsers",
+  "/registeredusers",
   verifyToken,
   authorizeRoles("SUPERADMIN", "ADMIN"),
-  getUsers
+  getRegisteredUsers
 );
 module.exports = router;
 

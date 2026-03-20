@@ -1,7 +1,7 @@
 
 const express = require("express");
 const router = express.Router();
-const { createUser,getEngineersByCity,getAdminsByCity,getRegisteredUsers } = require("../controllers/userController");
+const { createUser,getEngineersByCity,getAdminsByCity,getRegisteredUsers,toggleUserStatus } = require("../controllers/userController");
 const { verifyToken, authorizeRoles } = require("../middleware/authMiddleware");
 const { getMyJobs } = require("../controllers/jobController");
 
@@ -34,6 +34,12 @@ router.get(
   verifyToken,
   authorizeRoles("SUPERADMIN", "ADMIN"),
   getRegisteredUsers
+);
+router.put(
+  "/updateuserstatus/:id/toggle",
+  verifyToken,
+  authorizeRoles("SUPER_ADMIN", "ADMIN"),
+  toggleUserStatus
 );
 module.exports = router;
 

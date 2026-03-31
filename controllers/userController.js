@@ -80,7 +80,7 @@ exports.getRegisteredUsers = async (req, res) => {
     console.log(req.user);
     let users;
 
-    if (role === "SUPER_ADMIN") {
+    if (role === "SUPERADMIN") {
       users = await User.find();
     } 
     

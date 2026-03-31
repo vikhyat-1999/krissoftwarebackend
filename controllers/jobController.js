@@ -61,28 +61,35 @@ res.status(500).json({ message: "Server error" });
 };
 
 exports.getAdminJobs = async (req, res) => {
-
   try {
 
     const jobs = await Job.find({
       createdBy: req.user.id
-    })
-    .populate("assignedTo", "name");
+    }).populate("assignedTo", "name");
 
-    res.json({
-      jobs
+    const jobIds = jobs.map(job => job._id);
+
+    const reports = await Report.find({
+      jobId: { $in: jobIds }
     });
+
+    const jobsWithReports = jobs.map(job => {
+      const report = reports.find(
+        r => r.jobId.toString() === job._id.toString()
+      );
+
+      return {
+        ...job.toObject(),
+        reportId: report ? report._id : null
+      };
+    });
+
+    res.json({ jobs: jobsWithReports });
 
   } catch (error) {
-
     console.error(error);
-
-    res.status(500).json({
-      message: "Server error"
-    });
-
+    res.status(500).json({ message: "Server error" });
   }
-
 };
 exports.getMyJobs = async (req, res) => {
   try {

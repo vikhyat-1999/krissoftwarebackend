@@ -165,9 +165,7 @@ exports.getReportByJobId = async (req, res) => {
   try {
 
     const { jobId } = req.params;
-    console.log("HIT JOB ROUTE",req.params.jobId)
-
-    const report = await Report.findOne({ jobId });
+    const report = await Report.findById(jobId );
 
     if (!report) {
       return res.status(404).json({ message: "Report not found" });

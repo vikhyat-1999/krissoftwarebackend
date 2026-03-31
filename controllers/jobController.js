@@ -1,4 +1,5 @@
 const Job = require("../models/Job");
+const Report = require("../models/Report");
 const User = require("../models/User");
 const Notification = require("../models/Notfication");
 exports.createJob = async (req, res) => {

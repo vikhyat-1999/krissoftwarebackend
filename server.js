@@ -20,6 +20,7 @@ app.use("/api/jobs", require("./routes/jobRoutes"));
 app.use("/api/reports", require("./routes/reportRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/banks", require("./routes/bankRoutes"));
+app.use("/api/locations", require("./routes/locationRoutes"));
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)

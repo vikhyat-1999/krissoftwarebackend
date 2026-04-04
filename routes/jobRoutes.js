@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { createJob,getMyJobs,getAdminJobs  } = require("../controllers/jobController");
+const { createJob,getMyJobs,getAdminJobs,getJobById  } = require("../controllers/jobController");
 const { verifyToken, authorizeRoles } = require("../middleware/authMiddleware");
 
 router.post(

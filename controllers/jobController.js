@@ -127,3 +127,27 @@ exports.getMyJobs = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+exports.getJobById = async (req, res) => {
+
+  try {
+
+    const job = await Job.findById(req.params.id)
+      .populate("assignedTo", "name");
+
+    if (!job) {
+      return res.status(404).json({
+        message: "Job not found"
+      });
+    }
+
+    res.json({ job });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: "Server error"
+    });
+
+  }
+
+};

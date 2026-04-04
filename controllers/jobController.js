@@ -94,12 +94,33 @@ exports.getAdminJobs = async (req, res) => {
 };
 exports.getMyJobs = async (req, res) => {
   try {
-
     const jobs = await Job.find({
-    assignedTo: req.user.id
-    }).populate("assignedTo", "name");
+      assignedTo: req.user.id
+    })
+    .populate("assignedTo", "name")
+    .lean(); // 👈 IMPORTANT (so we can modify objects)
 
-    res.json(jobs);
+    // 👉 Step 1: collect job IDs
+    const jobIds = jobs.map(job => job._id);
+
+    // 👉 Step 2: fetch reports for these jobs
+    const reports = await Report.find({
+      jobId: { $in: jobIds }
+    }).select("_id jobId").lean();
+
+    // 👉 Step 3: create map
+    const reportMap = {};
+    reports.forEach(report => {
+      reportMap[report.jobId.toString()] = report._id.toString();
+    });
+
+    // 👉 Step 4: attach reportId to each job
+    const finalJobs = jobs.map(job => ({
+      ...job,
+      reportId: reportMap[job._id.toString()] || null
+    }));
+
+    res.json(finalJobs);
 
   } catch (error) {
     console.log(error);

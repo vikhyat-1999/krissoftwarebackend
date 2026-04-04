@@ -20,6 +20,6 @@ router.get(
   verifyToken,
   getAdminJobs
 );
-router.get("/jobs/:id", verifyToken,getJobById);
+router.get("/:id", verifyToken,getJobById);
 module.exports = router;
 

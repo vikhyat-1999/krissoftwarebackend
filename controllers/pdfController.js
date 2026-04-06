@@ -19,7 +19,7 @@ exports.downloadReportPDF = async (req, res) => {
 
     doc.pipe(res);
 
-    // ---------- Helper: Format labels ----------
+    // ---------- Helper: Format label ----------
     const formatLabel = (key) => {
       return key
         .replace(/_/g, " ")
@@ -27,23 +27,24 @@ exports.downloadReportPDF = async (req, res) => {
         .replace(/\b\w/g, (c) => c.toUpperCase());
     };
 
-    // ---------- Helper: Recursive printer ----------
+    // ---------- Helper: Recursive print ----------
     const printObject = (obj, indent = 0) => {
       Object.keys(obj || {}).forEach((key) => {
         let value = obj[key];
 
-        // Handle nested object
+        // Skip photos (handled separately)
+        if (key === "photos") return;
+
+        // Nested object
         if (typeof value === "object" && value !== null && !Array.isArray(value)) {
           doc.moveDown(0.3);
           doc
             .fontSize(11)
-            .text(`${" ".repeat(indent)}${formatLabel(key)}:`, {
-              continued: false,
-            });
+            .text(`${" ".repeat(indent)}${formatLabel(key)}:`);
 
           printObject(value, indent + 4);
         }
-        // Handle array
+        // Array
         else if (Array.isArray(value)) {
           doc
             .fontSize(11)
@@ -53,7 +54,7 @@ exports.downloadReportPDF = async (req, res) => {
               }`
             );
         }
-        // Handle normal values
+        // Normal field
         else {
           doc
             .fontSize(11)
@@ -73,7 +74,7 @@ exports.downloadReportPDF = async (req, res) => {
 
     doc.moveDown();
 
-    // ---------- Top Summary (important fields) ----------
+    // ---------- Top Summary ----------
     const applicant = report.formData?.applicantDetails || {};
 
     doc.fontSize(12).text(`Applicant Name: ${applicant.applicantName || "N/A"}`);
@@ -85,13 +86,14 @@ exports.downloadReportPDF = async (req, res) => {
 
     doc.moveDown();
 
-    // ---------- Loop through all sections ----------
+    // ---------- Loop all sections ----------
     const formData = report.formData || {};
 
     Object.keys(formData).forEach((section) => {
+      if (section === "photos") return; // skip here
+
       doc.moveDown();
 
-      // Section Title
       doc
         .fontSize(14)
         .text(formatLabel(section), { underline: true });
@@ -100,6 +102,41 @@ exports.downloadReportPDF = async (req, res) => {
 
       printObject(formData[section]);
     });
+
+    // ---------- PHOTOS SECTION ----------
+    const photos = report.formData?.photos || [];
+
+    if (photos.length > 0) {
+      doc.addPage();
+
+      doc
+        .fontSize(16)
+        .text("Photos", { underline: true });
+
+      doc.moveDown();
+
+      photos.forEach((photo, index) => {
+        try {
+          const imagePath = path.join(__dirname, "..", photo.path);
+
+          doc.fontSize(12).text(`Photo ${index + 1}`);
+          doc.text(`Type: ${photo.type || "N/A"}`);
+          doc.text(`Description: ${photo.description || "N/A"}`);
+
+          doc.moveDown(0.5);
+
+          doc.image(imagePath, {
+            fit: [300, 300],
+            align: "center",
+          });
+
+          doc.moveDown();
+
+        } catch (err) {
+          console.log("Image error:", err.message);
+        }
+      });
+    }
 
     doc.end();
 

@@ -118,7 +118,7 @@ exports.downloadReportPDF = async (req, res) => {
       photos.forEach((photo, index) => {
         try {
           const imagePath = path.join(__dirname, "..", photo.path);
-
+          console.log("IMAGE PATH:", imagePath);
           doc.fontSize(12).text(`Photo ${index + 1}`);
           doc.text(`Type: ${photo.type || "N/A"}`);
           doc.text(`Description: ${photo.description || "N/A"}`);

@@ -44,3 +44,22 @@ exports.getBanks = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+exports.updateBank = async (req, res) => {
+  try {
+    const updatedBank = await Bank.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedBank) {
+      return res.status(404).json({ message: "Bank not found" });
+    }
+
+    res.json(updatedBank);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

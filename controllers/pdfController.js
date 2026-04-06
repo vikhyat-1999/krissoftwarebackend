@@ -104,44 +104,41 @@ exports.downloadReportPDF = async (req, res) => {
     });
 
     // ---------- PHOTOS SECTION ----------
-    const photos = report.formData?.photos || [];
+    const fs = require("fs");
+const photos = report.formData?.photos || [];
 
-    if (photos.length > 0) {
-      doc.addPage();
+if (photos.length > 0) {
+  doc.addPage();
+  doc.fontSize(16).text("Photos", { underline: true });
 
-      doc
-        .fontSize(16)
-        .text("Photos", { underline: true });
+  photos.forEach((photo, index) => {
+    try {
+      const imagePath = path.resolve(photo.path);
+
+      console.log("Trying:", imagePath);
+
+      if (!fs.existsSync(imagePath)) {
+        console.log("❌ Not found:", imagePath);
+        return;
+      }
 
       doc.moveDown();
 
-      photos.forEach((photo, index) => {
-        try {
-          const imagePath = path.join(__dirname, "..", photo.path);
-          console.log("IMAGE PATH:", imagePath);
-          doc.fontSize(12).text(`Photo ${index + 1}`);
-          doc.text(`Type: ${photo.type || "N/A"}`);
-          doc.text(`Description: ${photo.description || "N/A"}`);
+      doc.fontSize(12).text(`Photo ${index + 1}`);
+      doc.text(`Type: ${photo.type || "N/A"}`);
+      doc.text(`Description: ${photo.description || "N/A"}`);
 
-          doc.moveDown(0.5);
+      doc.moveDown(0.5);
 
-          doc.image(imagePath, {
-            fit: [300, 300],
-            align: "center",
-          });
-
-          doc.moveDown();
-
-        } catch (err) {
-          console.log("Image error:", err.message);
-        }
+      doc.image(imagePath, {
+        fit: [300, 300],
+        align: "center",
       });
+
+      doc.moveDown();
+
+    } catch (err) {
+      console.log("Image error:", err.message);
     }
-
-    doc.end();
-
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+  });
+}

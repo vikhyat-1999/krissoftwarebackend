@@ -1,6 +1,6 @@
 const PDFDocument = require("pdfkit");
 const Report = require("../models/Report");
-
+const path = require("path");
 exports.downloadReportPDF = async (req, res) => {
   try {
     const report = await Report.findById(req.params.id);

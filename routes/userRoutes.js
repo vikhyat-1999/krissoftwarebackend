@@ -41,5 +41,12 @@ router.put(
   authorizeRoles("SUPER_ADMIN", "ADMIN"),
   toggleUserStatus
 );
+router.delete(
+  "/delete/:id",
+  verifyToken,
+  authorizeRoles("ADMIN", "SUPERADMIN"),
+  deleteUser
+);
+module.
 module.exports = router;
 

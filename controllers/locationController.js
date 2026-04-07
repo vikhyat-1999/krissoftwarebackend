@@ -56,3 +56,18 @@ exports.deleteLocation = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+exports.updateLocation = async (req, res) => {
+  try {
+    const updated = await Location.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    res.json(updated);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

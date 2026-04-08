@@ -127,3 +127,50 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+exports.updateMyProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const {
+      name,
+      username,
+      phone,
+      address,
+      password
+    } = req.body;
+
+    // 🔥 Build update object dynamically
+    const updateData = {};
+
+    if (name) updateData.name = name;
+    if (username) updateData.username = username;
+    if (phone) updateData.phone = phone;
+    if (address) updateData.address = address;
+
+    // 🔒 Handle password separately
+    if (password && password.trim() !== "") {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateData.password = hashedPassword;
+    }
+
+    // 🔥 Update only provided fields
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateData },
+      { new: true }
+    ).select("-password"); // never return password
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Profile updated successfully",
+      user: updatedUser
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

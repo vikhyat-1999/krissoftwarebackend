@@ -5,10 +5,9 @@ const jwt = require("jsonwebtoken");
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
+
     const user = await User.findOne({ email });
-    console.log("DB NAME:", User.db.name);
-    console.log("User found:", user);
+    console.log(user)
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
@@ -33,7 +32,11 @@ exports.login = async (req, res) => {
       token,
       role: user.role,
       name: user.name,
-      location: user.location
+      location: user.location,
+      email: user.email,
+      username:user.username,
+      address:user.address,
+      phone:user.phone
     });
 
   } catch (error) {

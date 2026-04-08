@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { submitReport,getSubmittedReports,adminAction,getSingleReport,getApprovedReportsForSuperAdmin,getReportByJobId} = require("../controllers/reportController");
+const { submitReport,getSubmittedReports,adminAction,getSingleReport,getApprovedReportsForSuperAdmin,getReportByJobId,updateReport} = require("../controllers/reportController");
 const { verifyToken, authorizeRoles } = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload");
 
@@ -46,5 +46,12 @@ router.get(
   "/:id",
   verifyToken,
   getSingleReport
+);
+router.put(
+  "/edit/:id",
+  verifyToken,
+  authorizeRoles("ADMIN", "SUPERADMIN"),
+  upload.array("photos"), // 🔥 SAME multer as submit
+  updateReport
 );
 module.exports = router;

@@ -59,6 +59,37 @@ exports.submitReport = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+exports.updateReport = async (req, res) => {
+  try {
+    const reportId = req.params.id;
+
+    const report = await Report.findById(reportId);
+
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+
+    // 🔥 IMPORTANT: req.body is already structured
+    const updatedData = req.body;
+
+    // ---------- Preserve photos ----------
+    updatedData.photos = report.formData.photos || [];
+
+    // ---------- Save ----------
+    report.formData = updatedData;
+
+    await report.save();
+
+    res.json({
+      message: "Report updated successfully",
+      report
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 // exports.getSubmittedReports = async (req, res) => {
 
 //   const reports = await Report.find({ adminStatus: "PENDING" })

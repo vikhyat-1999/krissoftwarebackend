@@ -1,7 +1,7 @@
 
 const express = require("express");
 const router = express.Router();
-const { createUser,getEngineersByCity,getAdminsByCity,getRegisteredUsers,toggleUserStatus,deleteUser,updateMyProfile } = require("../controllers/userController");
+const { createUser,getEngineersByCity,getAdminsByCity,getRegisteredUsers,toggleUserStatus,deleteUser,updateMyProfile,updateUserByAdmin } = require("../controllers/userController");
 const { verifyToken, authorizeRoles } = require("../middleware/authMiddleware");
 const { getMyJobs } = require("../controllers/jobController");
 
@@ -48,5 +48,12 @@ router.delete(
   deleteUser
 );
 router.put("/updateprofile", verifyToken, updateMyProfile);
+router.put(
+  "/updatespecifcuser/:id",
+  verifyToken,
+  authorizeRoles("SUPERADMIN"),
+  updateUserByAdmin
+);
+
 module.exports = router;
 

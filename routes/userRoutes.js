@@ -51,7 +51,7 @@ router.put("/updateprofile", verifyToken, updateMyProfile);
 router.put(
   "/updatespecifcuser/:id",
   verifyToken,
-  authorizeRoles("SUPERADMIN"),
+  authorizeRoles("SUPERADMIN","ADMIN"),
   updateUserByAdmin
 );
 

@@ -103,14 +103,29 @@ exports.getRegisteredUsers = async (req, res) => {
   }
 };
 exports.toggleUserStatus = async (req, res) => {
-  const { isActive } = req.body;
+  try {
+    let { isActive } = req.body;
 
-  const user = await User.findById(req.params.id);
-  user.isActive = isActive;
+    // 🔥 ensure boolean (extra safety)
+    if (typeof isActive !== "boolean") {
+      isActive = isActive === "true";
+    }
 
-  await user.save();
+    const user = await User.findById(req.params.id);
 
-  res.json({ message: "Updated" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.isActive = isActive;
+    await user.save();
+
+    res.json({ message: "Updated", isActive: user.isActive });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 exports.deleteUser = async (req, res) => {
   try {

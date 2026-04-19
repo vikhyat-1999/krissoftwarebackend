@@ -38,7 +38,7 @@ router.get(
 router.put(
   "/updateuserstatus/:id/toggle",
   verifyToken,
-  authorizeRoles("SUPER_ADMIN", "ADMIN"),
+  authorizeRoles("SUPERADMIN", "ADMIN"),
   toggleUserStatus
 );
 router.delete(

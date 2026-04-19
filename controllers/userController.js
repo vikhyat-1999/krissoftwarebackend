@@ -174,3 +174,39 @@ exports.updateMyProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+exports.updateUserByAdmin = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const { name, email, phone, password } = req.body;
+
+    const updateData = {};
+
+    // ✅ Update only provided fields
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (phone) updateData.phone = phone;
+
+    // 🔐 Password handling (IMPORTANT)
+    if (password && password.trim() !== "") {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateData.password = hashedPassword;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    ).select("-password"); // 🔥 never send password
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(updatedUser);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

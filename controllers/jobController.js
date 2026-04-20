@@ -151,3 +151,59 @@ exports.getJobById = async (req, res) => {
   }
 
 };
+exports.assignJobToEngineer = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    const { engineerId } = req.body;
+
+    if (!engineerId) {
+      return res.status(400).json({ message: "Engineer ID is required" });
+    }
+
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    const engineer = await User.findById(engineerId);
+    if (!engineer) {
+      return res.status(404).json({ message: "Engineer not found" });
+    }
+
+    if (engineer.role !== "ENGINEER") {
+      return res.status(400).json({
+        message: "Selected user is not an engineer"
+      });
+    }
+
+    // 🔥 Detect reassignment
+    const isReassignment =
+      job.assignedTo && job.assignedTo.toString() !== engineerId;
+
+    // ---------- Assign ----------
+    job.assignedTo = engineerId;
+    job.assignedDate = new Date();
+
+    await job.save();
+
+    // 🔥 IMPORTANT: Don't re-query (this was causing crash)
+    job.assignedTo = {
+      _id: engineer._id,
+      name: engineer.name
+    };
+
+    return res.status(200).json({
+      message: isReassignment
+        ? "Engineer reassigned successfully"
+        : "Engineer assigned successfully",
+      job
+    });
+
+  } catch (error) {
+    console.error("❌ Assign/Reassign error:", error);
+
+    return res.status(500).json({
+      message: "Assignment failed internally"
+    });
+  }
+};

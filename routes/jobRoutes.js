@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { createJob,getMyJobs,getAdminJobs,getJobById  } = require("../controllers/jobController");
+const { createJob,getMyJobs,getAdminJobs,getJobById,assignJobToEngineer } = require("../controllers/jobController");
 const { verifyToken, authorizeRoles } = require("../middleware/authMiddleware");
 
 router.post(
@@ -21,5 +21,11 @@ router.get(
   getAdminJobs
 );
 router.get("/:id", verifyToken,getJobById);
+router.put(
+  "/assign/:id",
+  verifyToken,
+  authorizeRoles("ADMIN", "SUPERADMIN"),
+  assignJobToEngineer
+);
 module.exports = router;
 

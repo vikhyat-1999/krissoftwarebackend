@@ -3,62 +3,42 @@ const Report = require("../models/Report");
 const User = require("../models/User");
 const Notification = require("../models/Notfication");
 exports.createJob = async (req, res) => {
+  try {
 
-try {
+    const {
+      leadId,
+      applicantName,
+      mobile,
+      siteAddressTechnical,
+      siteAddressDocument,
+      siteAddressSite,
+      bankName,
+      initiatedByBank
+    } = req.body;
 
-const { leadId, applicantName, assignedTo } = req.body;
+    const job = await Job.create({
+      leadId,
+      applicantName,
+      mobile,
+      siteAddressTechnical,
+      siteAddressDocument,
+      siteAddressSite,
+      bankName,
+      initiatedByBank,
 
-if (!leadId || !applicantName || !assignedTo) {
-return res.status(400).json({ message: "All fields are required" });
-}
+      createdBy: req.user.id,
 
-const engineer = await User.findById(assignedTo);
+      // 👇 DO NOT assign here
+      assignedTo: null,
+      assignedDate: null
+    });
 
-if (!engineer || engineer.role !== "ENGINEER") {
-return res.status(400).json({ message: "Invalid engineer selected" });
-}
+    res.json(job);
 
-const existingJob = await Job.findOne({ leadId });
-
-if (existingJob) {
-return res.status(400).json({ message: "Lead ID already exists" });
-}
-
-const job = await Job.create({
-
-leadId,
-applicantName,
-assignedTo,
-createdBy: req.user.id,
-assignedDate: new Date(),
-siteVisitStatus: "PENDING",
-reportStatus: "NOT_SUBMITTED"
-
-});
-
-await Notification.create({
-
-user: assignedTo,
-title: "New Job Assigned",
-message: `You have been assigned new job ${leadId}`,
-type: "JOB_ASSIGNED"
-
-});
-
-res.status(201).json({
-message: "Job assigned successfully",
-job
-});
-
-}
-catch (error) {
-
-console.error(error);
-
-res.status(500).json({ message: "Server error" });
-
-}
-
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 exports.getAdminJobs = async (req, res) => {

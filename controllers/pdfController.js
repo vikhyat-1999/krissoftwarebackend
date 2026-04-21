@@ -3,7 +3,7 @@ const Report = require("../models/Report");
 const path = require("path");
 const fs = require("fs");
 
-const puppeteer = require("puppeteer-core");
+const puppeteer = require("puppeteer");
 exports.downloadReportPDF = async (req, res) => {
   try {
     const report = await Report.findById(req.params.id);
@@ -280,7 +280,6 @@ th {
     `;
 
 const browser = await puppeteer.launch({
-  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
   args: ["--no-sandbox", "--disable-setuid-sandbox"],
   headless: true
 });

@@ -1,9 +1,20 @@
-const PDFDocument = require("pdfkit");
-const Report = require("../models/Report");
-const path = require("path");
-const fs = require("fs");
-
 const puppeteer = require("puppeteer");
+const fs = require("fs");
+const path = require("path");
+
+function getChromePath() {
+  const base = path.join(process.cwd(), ".local-chromium", "chrome");
+
+  if (!fs.existsSync(base)) {
+    return null;
+  }
+
+  const folder = fs.readdirSync(base).find(f => f.startsWith("linux-"));
+  if (!folder) return null;
+
+  return path.join(base, folder, "chrome-linux64", "chrome");
+}
+
 exports.downloadReportPDF = async (req, res) => {
   try {
     const report = await Report.findById(req.params.id);
@@ -13,9 +24,8 @@ exports.downloadReportPDF = async (req, res) => {
     }
 
     const d = report.formData || {};
-    const baseURL = "https://krissoftwarebackend.onrender.com"; // change in production
+    const baseURL = "https://krissoftwarebackend.onrender.com";
 
-    // ---------- FILTER ONLY REAL FLOORS ----------
     const floorKeys = Object.keys(d.Unitdetails || {}).filter(key =>
       key.toLowerCase().includes("floor") &&
       !key.toLowerCase().includes("approved") &&
@@ -279,20 +289,23 @@ th {
     </html>
     `;
 
-const browser = await puppeteer.launch({
-  args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  headless: true
-});
+    // 🔥 IMPORTANT PART (browser launch)
+    const browser = await puppeteer.launch({
+      executablePath: getChromePath() || undefined,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      headless: true
+    });
+
     const page = await browser.newPage();
 
     await page.setContent(html, {
-      waitUntil: "networkidle0",
-      timeout: 0
+      waitUntil: "load" // 🔥 FIXED (was networkidle0)
     });
 
     const pdf = await page.pdf({
       format: "A4",
-      printBackground: true
+      printBackground: true,
+      preferCSSPageSize: true
     });
 
     await browser.close();
@@ -305,7 +318,7 @@ const browser = await puppeteer.launch({
     res.send(pdf);
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "PDF generation failed" });
+    console.error("PDF ERROR:", error);
+    res.status(500).json({ message: error.message });
   }
 };

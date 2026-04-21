@@ -1,6 +1,8 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const PDFDocument = require("pdfkit");
+const Report = require("../models/Report");
 
 function getChromePath() {
   const base = path.join(process.cwd(), ".local-chromium", "chrome");

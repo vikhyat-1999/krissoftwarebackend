@@ -61,33 +61,28 @@ exports.submitReport = async (req, res) => {
 };
 exports.updateReport = async (req, res) => {
   try {
-    const reportId = req.params.id;
-
-    const report = await Report.findById(reportId);
+    const report = await Report.findById(req.params.id);
 
     if (!report) {
       return res.status(404).json({ message: "Report not found" });
     }
 
-    // 🔥 IMPORTANT: req.body is already structured
-    const updatedData = req.body;
+    // 🔥 SAVE OLD VERSION
+    report.versions.push({
+      formData: report.formData,
+      editedBy: req.user.id
+    });
 
-    // ---------- Preserve photos ----------
-    updatedData.photos = report.formData.photos || [];
-
-    // ---------- Save ----------
-    report.formData = updatedData;
+    // 🔥 UPDATE CURRENT VERSION
+    report.formData = req.body;
 
     await report.save();
 
-    res.json({
-      message: "Report updated successfully",
-      report
-    });
+    res.json({ message: "Report updated with version history" });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.log(err);
+    res.status(500).json({ message: "Update failed" });
   }
 };
 // exports.getSubmittedReports = async (req, res) => {
@@ -262,5 +257,23 @@ exports.getApprovedReportsForSuperAdmin = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+exports.getReportVersions = async (req, res) => {
+  try {
+    const report = await Report.findById(req.params.id)
+      .populate("versions.editedBy", "name");
+
+    if (!report) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    res.json({
+      current: report.formData,
+      history: report.versions
+    });
+
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching versions" });
   }
 };

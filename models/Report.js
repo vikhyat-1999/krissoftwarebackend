@@ -13,6 +13,19 @@ const reportSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     required: true
   },
+  versions: [
+    {
+      formData: Object,
+      editedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      },
+      editedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }
+  ],
 
   adminStatus: {
     type: String,

@@ -4,7 +4,7 @@ const Job = require("../models/Job");
 exports.submitReport = async (req, res) => {
   try {
 
-    const { jobId } = req.body;
+    const { jobId, remark, ...rest } = req.body;
 
     if (!jobId) {
       return res.status(400).json({ message: "Invalid submission" });
@@ -24,8 +24,8 @@ exports.submitReport = async (req, res) => {
       return res.status(400).json({ message: "Report already submitted" });
     }
 
-    // Get form data
-    let formData = req.body;
+    // 🔥 Clean formData
+    let formData = rest;
 
     // Process uploaded images
     const photos = req.files.map((file, index) => ({
@@ -35,15 +35,14 @@ exports.submitReport = async (req, res) => {
       description: req.body.photoDescription ? req.body.photoDescription[index] : null
     }));
 
-    // Attach photos
     formData.photos = photos;
 
     const report = await Report.create({
       jobId,
-      formData
+      formData,
+      remark: remark || ""
     });
 
-    // Update job status (FIXED)
     await Job.findByIdAndUpdate(jobId, {
       reportStatus: "SUBMITTED",
       siteVisitStatus: "VISITED"
@@ -59,6 +58,7 @@ exports.submitReport = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 exports.updateReport = async (req, res) => {
   try {
     const report = await Report.findById(req.params.id);
@@ -276,4 +276,27 @@ exports.getReportVersions = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Error fetching versions" });
   }
+exports.toggleEditable = async (req, res) => {
+  try {
+    const { isEditable } = req.body;
+
+    const report = await Report.findById(req.params.id);
+
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+
+    report.isEditable = !!isEditable;
+
+    await report.save();
+
+    res.json({ message: "Updated successfully" });
+
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+  
 };

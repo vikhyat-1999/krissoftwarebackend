@@ -26,6 +26,15 @@ const reportSchema = new mongoose.Schema({
       }
     }
   ],
+  remark: {
+  type: String,
+  default: ""
+},
+
+isEditable: {
+  type: Boolean,
+  default: false
+},
 
   adminStatus: {
     type: String,

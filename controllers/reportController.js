@@ -276,6 +276,8 @@ exports.getReportVersions = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Error fetching versions" });
   }
+};
+
 exports.toggleEditable = async (req, res) => {
   try {
     const { isEditable } = req.body;
@@ -295,8 +297,5 @@ exports.toggleEditable = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
-};
-
-
   
 };

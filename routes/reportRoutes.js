@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { submitReport,getSubmittedReports,adminAction,getSingleReport,getApprovedReportsForSuperAdmin,getReportByJobId,updateReport,getReportVersions} = require("../controllers/reportController");
+const { submitReport,getSubmittedReports,adminAction,getSingleReport,toggleEditable,getApprovedReportsForSuperAdmin,getReportByJobId,updateReport,getReportVersions} = require("../controllers/reportController");
 const { verifyToken, authorizeRoles } = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload");
 
@@ -59,5 +59,11 @@ router.get(
   verifyToken,
   authorizeRoles("SUPERADMIN"), // 🔒 only superadmin can see history
   getReportVersions
+);
+router.put(
+  "/:id/toggle-edit",
+  verifyToken,
+  authorizeRoles("SUPERADMIN"),
+  toggleEditable
 );
 module.exports = router;

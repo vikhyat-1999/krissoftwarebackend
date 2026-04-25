@@ -41,7 +41,7 @@ exports.downloadReportPDF = async (req, res) => {
       <style>
       body {
   font-family: Arial, sans-serif;
-  font-size: 5px; /* 🔥 smaller = professional */
+  font-size: 12px; /* 🔥 smaller = professional */
   margin: 15px;
 }
 
@@ -70,7 +70,7 @@ td, th {
   }
 
 th {
-  font-size: 14px;
+  font-size: 12px;
   background: #f2f2f2;
 }
 
@@ -81,17 +81,6 @@ th {
 }
 
 /* 🔥 FIX LABEL WIDTH */
-.label {
-  font-weight: bold;
-  width: 20%;
-  font-size:12px; 
-}
-
-/* 🔥 VALUE CELLS */
-.value {
-  width: 30%;
-  font-size:12px;
-}
 
 /* 🔥 prevent ugly wrapping */
 .nowrap {
@@ -120,6 +109,54 @@ th {
   height: 100px;
   object-fit: cover;
   border: 1px solid #000;
+}
+  .report-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 12px;
+}
+
+.report-table td {
+  border: 1px solid #000;
+  padding: 5px;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
+.section-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 6px;
+}
+
+.label {
+  font-weight: bold;
+  width: 20%;
+}
+
+.value {
+  width: 30%;
+}
+.tall-row td {
+  padding: 12px 6px;
+  line-height: 1.4;
+}
+  .report-table + .report-table {
+  margin-top: -1px;
+}
+  .remarks-cell {
+  line-height: 1.4;
+  padding: 8px 6px;
+  vertical-align: top;
+}
+  .final-section .label {
+  width: 25%;
+}
+
+.final-section .value {
+  width: 75%;
 }
       </style>
     </head>
@@ -184,17 +221,149 @@ th {
     </table>
 
     <!-- ================= PROPERTY DETAILS ================= -->
-    <table>
-      <tr><td colspan="2" class="section">PROPERTY DETAILS</td></tr>
-      <tr><td class="label">Person Met</td><td>${d?.Propertydetails?.person_met_at_site || ""}</td></tr>
-      <tr><td class="label">Contact Number</td><td>${d?.Propertydetails?.Contactnumber || ""}</td></tr>
-      <tr><td class="label">Site Address</td><td>${d?.Propertydetails?.siteaddress || ""}</td></tr>
-      <tr><td class="label">Address as per Doc</td><td>${d?.Propertydetails?.address_as_per_doc || ""}</td></tr>
-      <tr><td class="label">Address as per Site</td><td>${d?.Propertydetails?.address_as_per_site || ""}</td></tr>
-      <tr><td class="label">Nearby Landmark</td><td>${d?.Propertydetails?.Nearby_landmark || ""}</td></tr>
-      <tr><td class="label">Coordinates</td><td>${d?.Propertydetails?.Cooridinates || ""}</td></tr>
-      <tr><td class="label">Visit Date</td><td>${d?.Propertydetails?.site_visit_date || ""}</td></tr>
-    </table>
+    <table class="report-table">
+  <tr>
+    <td colspan="6" class="section-title">Property & Surrounding details</td>
+  </tr>
+
+  <!-- Row 1 -->
+  <tr>
+    <td class="label">House/Flat/Premises No.</td>
+    <td class="value"></td>
+    <td class="label">Floor No.</td>
+    <td class="value"></td>
+    <td class="label">Wing Name/No.</td>
+    <td class="value"></td>
+  </tr>
+
+  <!-- Row 2 -->
+  <tr class="tall-row">
+    <td class="label">Colony/Project Name</td>
+    <td class="value"></td>
+    <td class="label">Plot/Property/DAG No.</td>
+    <td class="value"></td>
+    <td class="label">Khasra/Survey No.</td>
+    <td class="value"></td>
+  </tr>
+
+  <!-- Row 3 -->
+  <tr>
+    <td class="label">Gali No./Road Name</td>
+    <td class="value"></td>
+    <td class="label">Sector/Phase/Ward</td>
+    <td class="value"></td>
+    <td class="label">Landmark</td>
+    <td class="value"></td>
+  </tr>
+
+  <!-- Row 4 -->
+  <tr>
+    <td class="label">Village/Location</td>
+    <td class="value"></td>
+    <td class="label">Mauza/Police Station</td>
+    <td class="value"></td>
+    <td class="label">City/Tehsil/Taluka/Town</td>
+    <td class="value"&nbsp></td>
+  </tr>
+
+  <!-- Row 5 -->
+  <tr>
+    <td class="label">District</td>
+    <td class="value"></td>
+    <td class="label">State</td>
+    <td class="value"></td>
+  </tr>
+
+  <!-- Row 6 -->
+  <tr>
+    <td class="label">Street Name & No</td>
+    <td class="value" colspan="3"></td>
+    <td class="label">Pincode</td>
+    <td class="value"></td>
+  </tr>
+
+  <!-- Row 7 -->
+  <tr>
+    <td class="label" colspan="2">Distance from Nearest DMI branch (Km)</td>
+    <td class="value"></td>
+    <td class="label" colspan="2">Distance from Nearest city centre (Km)</td>
+    <td class="value"></td>
+  </tr>
+</table>
+<table class="report-table">
+
+  <!-- SECTION TITLE -->
+  <tr>
+    <td colspan="6" class="section-title">
+      List of Documents and person details met at site
+    </td>
+  </tr>
+
+  <!-- ROW 1 -->
+  <tr>
+    <td class="label" colspan="2">List of Documents submitted</td>
+    <td class="value" colspan="4"></td>
+  </tr>
+
+  <!-- ROW 2 -->
+  <tr>
+    <td class="label" colspan="2">Property owner as per documents</td>
+    <td class="value" colspan="1"></td>
+
+    <td class="label" colspan="2">Is it self occupied property by Applicant</td>
+    <td class="value"></td>
+  </tr>
+
+  <!-- ROW 3 -->
+  <tr>
+    <td class="label" colspan="2">Name of person met</td>
+    <td class="value"></td>
+
+    <td class="label" colspan="2">If No, who owns the property</td>
+    <td class="value"></td>
+  </tr>
+
+  <!-- ROW 4 -->
+  <tr>
+    <td class="label" colspan="2">Contact no. of person met</td>
+    <td class="value"></td>
+
+    <td class="label" colspan="2">Relation with applicant</td>
+    <td class="value"></td>
+  </tr>
+
+  <!-- ROW 5 -->
+  <tr>
+    <td class="label" colspan="2">Contact no. of Applicant</td>
+    <td class="value" colspan="4"></td>
+  </tr>
+
+</table>
+
+
+<!-- DOCUMENT TABLE (separate but visually continuous) -->
+
+<table class="report-table" style="margin-top: -8px;">
+
+  <!-- HEADER -->
+  <tr>
+    <td class="label">Document Name</td>
+    <td class="label">Received Type</td>
+    <td class="label">Received Status</td>
+    <td class="label">Document Ref Number</td>
+    <td class="label">Document Date</td>
+  </tr>
+
+  <!-- DATA ROW -->
+  <tr class="tall-row">
+    <td class="value" &nbsp></td>
+    <td class="value" &nbsp></td>
+    <td class="value" &nbsp></td>
+    <td class="value" &nbsp></td>
+    <td class="value" &nbsp></td>
+  </tr>
+
+</table>
 
     <!-- ================= PHYSICAL ================= -->
     <table>
@@ -286,7 +455,48 @@ th {
         </td>
       </tr>
     </table>
+    <!-- ================= FINAL DECLARATION ================= -->
+    <table class="report-table final-section">
 
+  <!-- SPECIAL REMARKS -->
+  <tr>
+    <td class="label">Special Remarks</td>
+    <td class="value remarks-cell">
+      Remark:-<br>
+      1. The Subject property is a vacant plot.( Area Undefined. )<br>
+      2. The actual BUA is Undefined Sq.Ft.<br>
+      3. The valuation has taken as per FSI area.<br>
+      4. The subject property was in vacant plot at the time of site visit.<br>
+      5. Subject Property under MC Limit.<br>
+      6. The population density in the locality is approx. 20-25%.<br>
+      7. The subject property is not easily identifiable, the same can be identified with the help of contact person/applicant.<br>
+      8. The approach of the property is through Undefined Feet Wide Road.<br>
+      9. Latitude and longitude- Undefined, Undefined.<br>
+      10. A copy of the construction estimate has been provided to us for Rs. 11,70,000.00/- for proposed structure ground floor storied having area 900.00 sq. feet and the same has been restricted (FSI Area) to Rs. 8,74,800.00/- (Rs. 1200.00 per sq. feet) which has been considered for the valuation.<br>
+      Provided Document<br>
+      1. A Soft copy of Undefined, Date- Undefined has been provided.
+    </td>
+  </tr>
+
+  <!-- REPORT STATUS -->
+  <tr>
+    <td class="label">Report status</td>
+    <td class="value">Undefined</td>
+  </tr>
+
+  <!-- DECLARATION -->
+  <tr>
+    <td class="label">I hereby declare that:-</td>
+    <td class="value remarks-cell">
+      (1) I have personally visited the property.<br>
+      (2) I have no direct or indirect interest in the property valued.<br>
+      (3) The information furnished in the report is true and correct to the best of my knowledge and belief.<br>
+      (4) In our view the work being done for construction/extension/improvement in the dwelling unit does not endanger the residents.<br>
+      (5) Google map copy attached here with.
+    </td>
+  </tr>
+
+</table>
     </body>
     </html>
     `;

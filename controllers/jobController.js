@@ -187,3 +187,33 @@ exports.assignJobToEngineer = async (req, res) => {
     });
   }
 };
+exports.getAllJobsForSuperAdmin = async (req, res) => {
+  try {
+    // 🔥 NO FILTER → fetch all jobs
+    const jobs = await Job.find()
+      .populate("assignedTo", "name");
+
+    const jobIds = jobs.map(job => job._id);
+
+    const reports = await Report.find({
+      jobId: { $in: jobIds }
+    });
+
+    const jobsWithReports = jobs.map(job => {
+      const report = reports.find(
+        r => r.jobId.toString() === job._id.toString()
+      );
+
+      return {
+        ...job.toObject(),
+        reportId: report ? report._id : null
+      };
+    });
+
+    res.json({ jobs: jobsWithReports });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

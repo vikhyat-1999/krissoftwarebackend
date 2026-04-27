@@ -225,3 +225,13 @@ exports.updateUserByAdmin = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+exports.getAllEngineers = async (req, res) => {
+  try {
+    const engineers = await User.find({ role: "ENGINEER" })
+      .select("name");
+
+    res.json({ engineers });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching engineers" });
+  }
+};

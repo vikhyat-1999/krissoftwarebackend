@@ -158,6 +158,24 @@ th {
 .final-section .value {
   width: 75%;
 }
+ .photo-header {
+  text-align: center;
+  font-weight: bold;
+  padding: 6px;
+}
+
+.photo-cell {
+  padding: 4px;
+  height: 180px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.photo-cell img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+}
       </style>
     </head>
 
@@ -442,19 +460,49 @@ th {
     </table>
 
     <!-- ================= PHOTOS ================= -->
-    <table>
-      <tr><td class="section">PHOTOS</td></tr>
-      <tr>
-        <td>
-          <div class="photo-grid">
-            ${(d?.photos || []).map(p => {
+<table class="report-table">
+  <tr>
+    <td colspan="3" class="section-title">Property Photographs</td>
+  </tr>
+
+  ${
+    (() => {
+      const photos = d?.photos || [];
+
+      let rows = [];
+
+      for (let i = 0; i < photos.length; i += 3) {
+        const group = photos.slice(i, i + 3);
+
+        rows.push(`
+          <!-- HEADER ROW -->
+          <tr>
+            ${group.map(p => `
+              <td class="photo-header">${p.type || ""}</td>
+            `).join("")}
+            ${Array(3 - group.length).fill('<td></td>').join("")}
+          </tr>
+
+          <!-- IMAGE ROW -->
+          <tr>
+            ${group.map(p => {
               const path = (p.path || "").replace(/\\\\/g, "/");
-              return `<img src="${baseURL}/${path}" />`;
+              return `
+                <td class="photo-cell">
+                  <img src="${baseURL}/${path}" />
+                </td>
+              `;
             }).join("")}
-          </div>
-        </td>
-      </tr>
-    </table>
+            ${Array(3 - group.length).fill('<td></td>').join("")}
+          </tr>
+        `);
+      }
+
+      return rows.join("");
+    })()
+  }
+</table>
+
     <!-- ================= FINAL DECLARATION ================= -->
     <table class="report-table final-section">
 

@@ -176,6 +176,16 @@ th {
   height: 170px;
   object-fit: cover;
 }
+.valuation-table .label {
+  width: auto;
+}
+
+.valuation-table td {
+  text-align: left;
+}
+.report-table .section-title {
+  text-align: center !important;
+}
       </style>
     </head>
 
@@ -458,6 +468,109 @@ th {
         <td>${d?.Boundaries?.As_per_site?.South || ""}</td>
       </tr>
     </table>
+        <table class="report-table valuation-table">
+
+  <!-- TITLE -->
+  <tr>
+    <td colspan="4" class="section-title">VALUATION</td>
+  </tr>
+
+  <!-- HEADER -->
+  <tr>
+    <td class="label">Particular</td>
+    <td class="label">Area (In sq.ft)</td>
+    <td class="label">Rate (Per sq.ft)</td>
+    <td class="label">Total Value</td>
+  </tr>
+
+  <!-- DATA ROWS -->
+  <tr>
+    <td class="label">Land Area</td>
+    <td class="value"></td>
+    <td class="value"></td>
+    <td class="value"></td>
+  </tr>
+
+  <tr>
+    <td class="label">Built up Area (Existing)</td>
+    <td class="value"></td>
+    <td class="value"></td>
+    <td class="value"></td>
+  </tr>
+
+  <tr>
+    <td class="label">Built up Area (Proposed)</td>
+    <td class="value"></td>
+    <td class="value"></td>
+    <td class="value"></td>
+  </tr>
+
+  <tr>
+    <td class="label">Super Built up Area</td>
+    <td class="value"></td>
+    <td class="value"></td>
+    <td class="value"></td>
+  </tr>
+
+  <!-- MERGED ROWS -->
+  <tr>
+    <td class="label">Carpet Area for Insurance</td>
+    <td class="value" colspan="3"></td>
+  </tr>
+
+  <tr>
+    <td class="label">Rate Carpet Area for Insurance</td>
+    <td class="value" colspan="3"></td>
+  </tr>
+
+  <tr>
+    <td class="label">Insurable Value</td>
+    <td class="value" colspan="3"></td>
+  </tr>
+
+  <tr>
+    <td class="label">Amenities Value</td>
+    <td class="value" colspan="3"></td>
+  </tr>
+
+  <tr>
+    <td class="label">Realizable Value</td>
+    <td class="value" colspan="3"></td>
+  </tr>
+
+  <tr>
+    <td class="label">Property Value As per Circle Rate</td>
+    <td class="value" colspan="3"></td>
+  </tr>
+
+  <!-- NDMA -->
+  <tr>
+    <td class="label">Is the Technical Report Complies with NDMA Guidelines</td>
+    <td class="value" colspan="3"></td>
+  </tr>
+
+  <!-- STAGE OF CONSTRUCTION -->
+  <tr>
+    <td class="label">Stage of Construction</td>
+    <td class="label">Building %</td>
+    <td class="label">Unit Being Funded %</td>
+    <td class="value"></td>
+  </tr>
+
+  <tr>
+    <td class="value"></td>
+    <td class="value"></td>
+    <td class="value"></td>
+    <td class="value"></td>
+  </tr>
+
+  <!-- BUILDING NOMENCLATURE -->
+  <tr>
+    <td class="label">Building Nomenclature</td>
+    <td class="value" colspan="3"></td>
+  </tr>
+
+</table>
 
     <!-- ================= PHOTOS ================= -->
 <table class="report-table">

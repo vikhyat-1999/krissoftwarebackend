@@ -18,7 +18,7 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/jobs", require("./routes/jobRoutes"));
 app.use("/api/reports", require("./routes/reportRoutes"));
-app.use("/api/notifications", require("./routes/notificationRoutes"));
+app.use("/api/notify", require("./routes/notificationRoutes"));
 app.use("/api/banks", require("./routes/bankRoutes"));
 app.use("/api/locations", require("./routes/locationRoutes"));
 app.use("/api/generate", require("./routes/pdfRoutes"));

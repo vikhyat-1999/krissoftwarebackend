@@ -15,7 +15,11 @@ const notificationSchema = new mongoose.Schema({
   isRead: {
     type: Boolean,
     default: false
-  }
+  },
+  jobId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Job"
+}
 }, { timestamps: true });
 
 module.exports = mongoose.model("Notification", notificationSchema);
